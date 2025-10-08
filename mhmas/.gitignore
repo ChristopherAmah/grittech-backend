@@ -1,0 +1,18 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Local development
+db.sqlite3
+*.pyc
+__pycache__/
+
+# Deployment artifacts
+deployment/
+lambda-deployment.zip
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/

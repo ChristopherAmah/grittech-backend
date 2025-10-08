@@ -14,8 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.shortcuts import redirect
+from django.http import HttpResponse
+
+
+# def home(request):
+#     return HttpResponse("<h1>Welcome to MHMAS Backend</h1><p>API is live</p>")
+
+def redirect_to_api(request):
+    return redirect('/api/health')
 
 urlpatterns = [
+    # path('', home),
+    path('', redirect_to_api),
     path('admin/', admin.site.urls),
+    path("api/", include("api.urls")),
 ]
