@@ -3,7 +3,7 @@ import awsgi
 from django.core.wsgi import get_wsgi_application
 
 # Set Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mhmas.settings')
 
 # Initialize Django WSGI application
 application = get_wsgi_application()

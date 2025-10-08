@@ -15,8 +15,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # Toggle DEBUG for local vs production
-# DEBUG = config('DEBUG', default=True, cast=bool)
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
+# DEBUG = True
 
 ALLOWED_HOSTS = [
     config('LAMBDA_FUNCTION_URL', default='*'),  # AWS Lambda Function URL (if used)
@@ -53,6 +53,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+# Configure CORS
+# CORS_ALLOWED_ORIGINS = [
+#     config('FRONTEND_URL'),
+# ]
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_HEADERS = ['*']
+
 
 # ------------------------------------------------------------
 # URL and WSGI
@@ -100,6 +109,8 @@ DATABASES = {
 #     }
 # }
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 # ------------------------------------------------------------
 # Password Validation
 # ------------------------------------------------------------
@@ -135,6 +146,11 @@ else:
     STATICFILES_DIRS = [BASE_DIR / 'static']
     STATIC_ROOT = BASE_DIR / 'staticfiles'
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
 # ------------------------------------------------------------
 # Django REST Framework
