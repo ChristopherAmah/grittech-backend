@@ -3,7 +3,7 @@ Django==4.2.0
 djangorestframework==3.14.0
 
 # NEW: Lambda adapter
-awsgi; sys_platform != "win32"
+awsgi2==1.0.2
 
 # NEW: PostgreSQL driver for Lambda
 psycopg2-binary
