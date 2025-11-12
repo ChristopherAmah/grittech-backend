@@ -19,6 +19,7 @@ ALLOWED_HOSTS = [
     config('LAMBDA_FUNCTION_URL', default='*'),
     'localhost',
     '127.0.0.1',
+    'http://127.0.0.1:8000/',
 ]
  
 # ------------------------------------------------------------
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'api',
     'corsheaders',
     # 'storages',  # Commented out until S3 is configured
@@ -93,12 +95,24 @@ WSGI_APPLICATION = 'mhmas.wsgi.application'
 # Detect if we're in AWS Lambda
 IS_LAMBDA = os.environ.get("AWS_LAMBDA_FUNCTION_NAME") is not None
  
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': '/tmp/db.sqlite3' if IS_LAMBDA else BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/tmp/db.sqlite3' if IS_LAMBDA else BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mhmas',  # the name you created in DataGrip
+        'USER': 'postgres',      # your postgres username
+        'PASSWORD': 'amarachi',  # your postgres password
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
  
 # NOTE: /tmp database will reset between Lambda cold starts
 # For production, use PostgreSQL with RDS
@@ -152,13 +166,20 @@ MEDIA_ROOT = '/tmp/media/'  # MUST use /tmp in Lambda!
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
 }
+
  
 # ------------------------------------------------------------
 # Logging
